@@ -1,28 +1,31 @@
+#importing the necessary libraries
 import numpy as np
 import pandas as pd
 import matplotlib.pyplot as plt
 
+#uploading file from computer to colab.
 from google.colab import files
 uploaded = files.upload()
 df=pd.read_csv ("data_file.csv")
-print (df.head)
+print (df.head())
 
+#defining columns as boiling points and molecular weights
 bp = df['boiling point (K)']
 mol_weight=df['molweight']
 plt.plot (bp, mol_weight)
 
-
+#separating training data
 x_train= np.array (bp)
 y_train= np.array (mol_weight)
 
-
+#defining a main regression function
 def main_regression (x_train):
   global f
   f=[]
   global w
-  w= int (input("Enter W"))
+  w= 50
   global b
-  b= int (input("Enter b"))
+  b= 50
   regression=0
   for i in range(len(x_train)):
     regression= (w * x_train[i]) + b
@@ -30,7 +33,7 @@ def main_regression (x_train):
   print (f,w,b)
   return (f,w, b)
 
-
+#calling the main regression function and plotting the function with the training data to make sure it is linear. 
 f,w,b= main_regression(x_train)
 plt.plot(f, x_train)
 
@@ -51,6 +54,7 @@ cost_func ()
 def gradient_desc (w,b):
   derivative_w=0
   alpha=0.01
+#simultaneously updating w and b.
   for i in range (len (x_train)):
     derivative_w= (f[i]-y_train[i]) * x_train[i] + derivative_w
   derivative_w= derivative_w * 1/len (x_train)
@@ -79,6 +83,7 @@ def better_regression (x_train, w, b):
 
 better_regression(x_train, w, b)
 
+#making a function to find the cost of the new model 
 def new_cost_func ():
   global new_cost
   new_cost=0
@@ -92,5 +97,6 @@ def new_cost_func ():
 
 new_cost_func ()
 
+#plotting the new model and the training and testing data to visualize accuracy.
 plt.plot (predictions, x_train, color="red", label="predicted data")
 plt.plot (mol_weight, bp)
