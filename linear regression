@@ -1,0 +1,96 @@
+import numpy as np
+import pandas as pd
+import matplotlib.pyplot as plt
+
+from google.colab import files
+uploaded = files.upload()
+df=pd.read_csv ("data_file.csv")
+print (df.head)
+
+bp = df['boiling point (K)']
+mol_weight=df['molweight']
+plt.plot (bp, mol_weight)
+
+
+x_train= np.array (bp)
+y_train= np.array (mol_weight)
+
+
+def main_regression (x_train):
+  global f
+  f=[]
+  global w
+  w= int (input("Enter W"))
+  global b
+  b= int (input("Enter b"))
+  regression=0
+  for i in range(len(x_train)):
+    regression= (w * x_train[i]) + b
+    f.append(regression)
+  print (f,w,b)
+  return (f,w, b)
+
+
+f,w,b= main_regression(x_train)
+plt.plot(f, x_train)
+
+#computing the cost function to find appropriate values for w and b:
+def cost_func ():
+  cost=0
+  global total_cost
+  total_cost=0
+  for i in range (len(y_train)):
+    cost= (f[i]-y_train [i]) **2
+    total_cost=total_cost + cost
+  total_cost= 1/2 * (total_cost)
+  print (total_cost)
+
+cost_func ()
+
+#using gradient decent to minimize error and find good values for w and b
+def gradient_desc (w,b):
+  derivative_w=0
+  alpha=0.01
+  for i in range (len (x_train)):
+    derivative_w= (f[i]-y_train[i]) * x_train[i] + derivative_w
+  derivative_w= derivative_w * 1/len (x_train)
+
+  derivative_b=0
+  for i in range (len (x_train)):
+    derivative_b= (f[i]-y_train[i]) +derivative_b
+  derivative_b= derivative_b * 1/len (x_train)
+
+  w= w- (alpha * derivative_w)
+  b= b- (alpha * derivative_b)
+
+  print ("w is", w, "and b is", b)
+  return (w, b)
+
+w,b= gradient_desc (w,b)
+
+#A good linear regression using the generated values of w and b:
+def better_regression (x_train, w, b):
+  global predictions
+  predictions=[]
+  for i in range (len(x_train)):
+    f=(w*x_train[i]) +b
+    predictions.append(f)
+  print(predictions)
+
+better_regression(x_train, w, b)
+
+def new_cost_func ():
+  global new_cost
+  new_cost=0
+  global new_total_cost
+  new_total_cost=0
+  for i in range (len(y_train)):
+    new_cost= (f[i]-y_train [i]) **2
+    new_total_cost=new_total_cost + new_cost
+  new_total_cost= 1/2 * (new_total_cost)
+  print (new_total_cost)
+
+new_cost_func ()
+
+plt.plot (predictions, x_train, color="red", label="predicted data")
+plt.plot (mol_weight, bp)
