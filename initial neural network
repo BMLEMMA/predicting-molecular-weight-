@@ -1,0 +1,37 @@
+# %%
+import tensorflow
+import numpy as np
+import tensorflow as tf
+from tensorflow import keras
+import pandas as pd
+from tensorflow.keras import layers
+import matplotlib.pyplot as plt 
+from tensorflow.keras import Sequential
+from tensorflow.keras.layers import Dense 
+from tensorflow.keras.losses import SparseCategoricalCrossentropy
+# %%
+#reading in the data:
+file_path="/Users/blenl/Desktop/data_file.csv"
+df = pd.read_csv(file_path)
+#print (df.head())
+
+# %%
+#defininng training sets to be 60% of the data and reshaping for use with tensorflow:
+x_train=df.iloc[0:3619,2]
+x_train = x_train.values.reshape(-1, 1)
+y_train = df.iloc[0:3619, 5].values
+# %%
+#defining the model using sequential:
+model= Sequential ([
+    Dense (units=30, activation='relu'),
+    Dense (units=15, activation='relu'),
+    Dense (units=1, activation='linear')
+    ])
+
+# %%
+#compiling:
+model.compile (optimizer='adam', loss='mse', metrics=['mae'])
+
+# %%
+#fitting 
+model.fit(x_train, y_train, epochs=100)
